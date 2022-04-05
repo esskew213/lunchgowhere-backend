@@ -14,6 +14,8 @@ const foodRoutes = require('./routes/food');
 app.use('/', foodRoutes);
 const userRoutes = require('./routes/user');
 app.use('/', userRoutes);
+const reviewRoutes = require('./routes/reviews');
+app.use('/reviews', reviewRoutes);
 ////
 const store = new MongoDBStore({
 	uri: process.env.MONGODB_URI,
