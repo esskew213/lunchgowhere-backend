@@ -9,10 +9,17 @@ const stallSchema = new Schema(
 		},
 		cuisine: {
 			type: String,
+			enum: [ 'Chinese', 'Western', 'Korean', 'Japanese', 'Malay', 'Indian', 'Others' ],
 			required: true
 		},
 		location: {
 			type: String,
+			enum: [
+				'Tanjong Pagar Plaza Market & Food Centre',
+				'Maxwell Food Centre',
+				'Hong Lim Market & Food Centre',
+				'Amoy Street Food Centre'
+			],
 			required: true
 		},
 		author: {

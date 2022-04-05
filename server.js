@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 const foodRoutes = require('./routes/food');
-app.use('/food', foodRoutes);
+app.use('/', foodRoutes);
 const userRoutes = require('./routes/user');
 app.use('/', userRoutes);
 ////
