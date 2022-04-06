@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const food = require('../controllers/food');
-router.get('/home', food.recommended);
+const catchAsync = require('../middleware/errorHandler');
+router.get('/home', catchAsync(food.recommended));
 
-router.post('/new', food.new);
+router.post('/new', catchAsync(food.new));
 
 module.exports = router;

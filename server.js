@@ -10,12 +10,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-const foodRoutes = require('./routes/food');
-app.use('/', foodRoutes);
-const userRoutes = require('./routes/user');
-app.use('/', userRoutes);
-const reviewRoutes = require('./routes/reviews');
-app.use('/reviews', reviewRoutes);
 ////
 const store = new MongoDBStore({
 	uri: process.env.MONGODB_URI,
@@ -33,9 +27,23 @@ app.use(
 	})
 );
 
+const foodRoutes = require('./routes/food');
+app.use('/', foodRoutes);
+const userRoutes = require('./routes/user');
+app.use('/', userRoutes);
+const reviewRoutes = require('./routes/reviews');
+const AppError = require('./AppError');
+app.use('/reviews', reviewRoutes);
+
+//// THROW ERROR IF USER TRIES TO ACCESS UNDEFINED ROUTES
+app.all('*', (req, res, next) => {
+	next(new AppError('Page not found', 404));
+});
+
 // ERROR HANDLING MIDDLEWARE
 app.use((err, req, res, next) => {
 	const { status = 500, message = 'Something went wrong' } = err;
+	res.status(status).send(message);
 });
 
 connectDB(process.env.MONGODB_URI);
