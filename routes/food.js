@@ -1,17 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const Stall = require('../models/Stall');
+const food = require('../controllers/food');
+router.get('/home', food.recommended);
 
-router.get('/home', async (req, res) => {
-	const topThreeStalls = await Stall.find({}).limit(3).populate('author');
-	console.log(topThreeStalls);
-	res.json(topThreeStalls);
-});
-
-router.post('/new', async (req, res) => {
-	const newStall = new Stall(req.body);
-	await newStall.save();
-	console.log('NEW STALL SAVED');
-});
+router.post('/new', food.new);
 
 module.exports = router;
