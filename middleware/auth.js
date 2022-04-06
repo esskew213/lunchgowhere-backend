@@ -4,3 +4,5 @@ const auth = (req, res, next) => {
 	}
 	res.status(403).json({ status: 'error', message: 'please login' });
 };
+
+export default auth;
