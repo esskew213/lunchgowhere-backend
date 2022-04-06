@@ -9,6 +9,6 @@ router.get('/login', userflow.login);
 router.get('/logout', userflow.logout);
 
 //// SEEDING USERS
-router.get('/seedUsers', userflow.seedUsers);
+router.get('/seedAll', userflow.seedAll);
 
 module.exports = router;

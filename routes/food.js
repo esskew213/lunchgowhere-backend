@@ -1,20 +1,17 @@
 const express = require('express');
 const router = express.Router();
+const Stall = require('../models/Stall');
 
-router.get('/', async (req, res) => {
-	res.send('FOOD');
+router.get('/home', async (req, res) => {
+	const topThreeStalls = await Stall.find({}).limit(3).populate('author');
+	console.log(topThreeStalls);
+	res.json(topThreeStalls);
 });
 
-const seedStalls = require('../seeds/seedStalls');
-const Stall = require('../models/Stall');
-router.get('/seedStalls', async (req, res) => {
-	Stall.deleteMany({});
-	for (let stall of seedStalls) {
-		const newStall = new Stall(stall);
-		await newStall.save();
-	}
-	console.log('SEEDED STALLS');
-	res.end();
+router.post('/new', async (req, res) => {
+	const newStall = new Stall(req.body);
+	await newStall.save();
+	console.log('NEW STALL SAVED');
 });
 
 module.exports = router;
