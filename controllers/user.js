@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const seedUsers = require('../seeds/seedUsers');
 const seedStalls = require('../seeds/seedStalls');
 const seedReviews = require('../seeds/seedReviews');
-
+const AppError = require('../AppError');
 module.exports.seedAll = async (req, res) => {
 	User.deleteMany({});
 	Stall.deleteMany({});
@@ -66,14 +66,20 @@ module.exports.signup = async (req, res) => {
 };
 
 module.exports.login = async (req, res) => {
+	console.log(req.body);
 	const { username, password } = req.body;
 	const user = await User.findOne({ username });
+	if (!user) {
+		console.log('Invalid username.');
+		throw new AppError('Invalid username.', 400);
+	}
 	const validPassword = await bcrypt.compare(password, user.hashedPassword);
 	if (validPassword) {
 		req.session.user_id = user._id;
-		res.redirect('/');
+		res.json({ status: 200, message: 'ok' });
 	} else {
-		res.status(401).json({ status: 'error', message: 'please login' });
+		console.log('Invalid password.');
+		throw new AppError('Invalid password.', 400);
 	}
 };
 
