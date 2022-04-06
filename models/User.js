@@ -5,11 +5,12 @@ const userSchema = new Schema(
 	{
 		name: {
 			type: String,
-			required: true
+			required: [ true, 'Name is required.' ]
 		},
 		username: {
 			type: String,
-			required: true
+			required: true,
+			unique: [ true, 'That username is already taken.' ]
 		},
 		hashedPassword: {
 			type: String,

@@ -5,17 +5,19 @@ const reviewSchema = new Schema(
 	{
 		price: {
 			type: Number,
-			required: true
+			required: [ true, 'Price is required.' ]
 		},
 		waitTime: {
 			type: Number,
-			required: true
+			required: [ true, 'Wait time is required.' ]
 		},
 		wouldEatAgain: {
-			type: Boolean
+			type: Boolean,
+			required: [ true, 'A response is required.' ]
 		},
 		wouldQueueAgain: {
-			type: Boolean
+			type: Boolean,
+			required: [ true, 'A response is required.' ]
 		},
 		author: {
 			type: Schema.Types.ObjectId,

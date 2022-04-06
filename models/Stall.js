@@ -5,12 +5,12 @@ const stallSchema = new Schema(
 	{
 		stallName: {
 			type: String,
-			required: true
+			required: [ true, 'Stall name is required.' ]
 		},
 		cuisine: {
 			type: String,
 			enum: [ 'Chinese', 'Western', 'Korean', 'Japanese', 'Malay', 'Indian', 'Others' ],
-			required: true
+			required: [ true, 'Cuisine is required.' ]
 		},
 		location: {
 			type: String,
@@ -20,7 +20,7 @@ const stallSchema = new Schema(
 				'Hong Lim Market & Food Centre',
 				'Amoy Street Food Centre'
 			],
-			required: true
+			required: [ true, 'Valid location is required.' ]
 		},
 		author: {
 			type: Schema.Types.ObjectId,

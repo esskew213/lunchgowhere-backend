@@ -24,5 +24,6 @@ module.exports.new = async (req, res) => {
 	}
 	const newStall = new Stall(req.body);
 	await newStall.save();
+	res.status(200).json({ status: 200, message: 'ok' });
 	console.log('NEW STALL SAVED');
 };
