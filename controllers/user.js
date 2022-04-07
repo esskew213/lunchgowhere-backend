@@ -13,7 +13,15 @@ module.exports.signup = async (req, res) => {
 	const hashedPassword = await bcrypt.hash(password, 12);
 	const newUser = new User({ name, username, hashedPassword });
 	await newUser.save();
-	req.session.user_id = newUser._id;
+
+	const userForToken = {
+		username: newUser.username,
+		id: newUser._id
+	};
+
+	const token = jwt.sign(userForToken, process.env.SECRET, { expiresIn: 60 * 60 });
+
+	res.status(200).send({ token, username: user.username, name: user.name });
 	res.redirect('/');
 };
 
@@ -41,9 +49,7 @@ module.exports.login = async (req, res) => {
 		username: user.username,
 		id: user._id
 	};
-
-	const token = jwt.sign(userForToken, process.env.SECRET);
-
+	const token = jwt.sign(userForToken, process.env.SECRET, { expiresIn: 60 * 60 });
 	res.status(200).send({ token, username: user.username, name: user.name });
 };
 

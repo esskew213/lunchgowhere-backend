@@ -37,7 +37,7 @@ app.use('/reviews', reviewRoutes);
 
 //// THROW ERROR IF USER TRIES TO ACCESS UNDEFINED ROUTES
 app.all('*', (req, res, next) => {
-	next(new AppError('Page not found', 404));
+	next(new AppError('Unknown endpoint', 404));
 });
 
 // ERROR HANDLING MIDDLEWARE
