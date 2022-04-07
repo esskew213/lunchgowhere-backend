@@ -2,11 +2,13 @@ const express = require('express');
 const session = require('express-session');
 const connectDB = require('./db/db');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const app = express();
 require('dotenv').config();
 
-app.use(cors());
+app.use(cookieParser());
+app.use(cors({ origin: [ 'http://localhost:3000', 'http://localhost:5001' ], credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
