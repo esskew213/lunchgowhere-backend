@@ -61,7 +61,11 @@ module.exports.login = async (req, res) => {
 
 	// set cookie with the token. httpOnly: true means cookie can't be read with JS but can be sent back to the server in HTTP requests
 	// this prevents XSS attacks from using document.cookie ot get a list of stored cookies
-	res.cookie('token', token, { httpOnly: true, maxAge: 60 * 60 });
+	res.cookie('token', token, {
+		httpOnly: true,
+		maxAge: 60 * 60 * 1000
+	});
+	res.header('Access-Control-Allow-Credentials', true);
 	res.status(200).send({ token, username: user.username, name: user.name });
 };
 

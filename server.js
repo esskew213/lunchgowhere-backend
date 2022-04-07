@@ -7,8 +7,8 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const app = express();
 require('dotenv').config();
 
-app.use(cookieParser());
 app.use(cors({ origin: [ 'http://localhost:3000', 'http://localhost:5001' ], credentials: true }));
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
