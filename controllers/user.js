@@ -2,11 +2,19 @@ const User = require('../models/User');
 const Stall = require('../models/Stall');
 const Review = require('../models/Review');
 const jwt = require('jsonwebtoken');
+
 const bcrypt = require('bcrypt');
 const seedUsers = require('../seeds/seedUsers');
 const seedStalls = require('../seeds/seedStalls');
 const seedReviews = require('../seeds/seedReviews');
 const AppError = require('../AppError');
+
+module.exports.getuser = async (req, res) => {
+	console.log('GETTING USER...');
+	const { username } = req.user;
+	const user = await User.find({ username });
+	res.json({ name: user.name, status: 200, message: 'OK' });
+};
 
 module.exports.signup = async (req, res) => {
 	const { name, username, password } = req.body;
@@ -50,10 +58,15 @@ module.exports.login = async (req, res) => {
 		id: user._id
 	};
 	const token = jwt.sign(userForToken, process.env.SECRET, { expiresIn: 60 * 60 });
+
+	// set cookie with the token. httpOnly: true means cookie can't be read with JS but can be sent back to the server in HTTP requests
+	// this prevents XSS attacks from using document.cookie ot get a list of stored cookies
+	res.cookie('token', token, { httpOnly: true, maxAge: 60 * 60 });
 	res.status(200).send({ token, username: user.username, name: user.name });
 };
 
 module.exports.logout = (req, res) => {
+	// res.clearCookie('token');
 	req.session.destroy(() => {
 		res.json({ status: 'ok', message: 'logged out' });
 	});
