@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 module.exports.new = async (req, res) => {
 	const { username } = req.user;
-	const user = await User.findOne({ username: username });
+	const user = await User.findOne({ username });
 	console.log('FOUND', user);
 	const { price, waitTime, wouldEatAgain, wouldQueueAgain } = req.body;
 	const newReview = new Review({ price, waitTime, wouldEatAgain, wouldQueueAgain, author: user });
