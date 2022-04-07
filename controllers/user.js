@@ -70,7 +70,7 @@ module.exports.login = async (req, res) => {
 };
 
 module.exports.logout = (req, res) => {
-	// res.clearCookie('token');
+	res.clearCookie('token');
 	req.session.destroy(() => {
 		res.json({ status: 'ok', message: 'logged out' });
 	});
