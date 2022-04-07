@@ -1,11 +1,61 @@
 const User = require('../models/User');
 const Stall = require('../models/Stall');
 const Review = require('../models/Review');
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const seedUsers = require('../seeds/seedUsers');
 const seedStalls = require('../seeds/seedStalls');
 const seedReviews = require('../seeds/seedReviews');
 const AppError = require('../AppError');
+
+module.exports.signup = async (req, res) => {
+	const { name, username, password } = req.body;
+	const hashedPassword = await bcrypt.hash(password, 12);
+	const newUser = new User({ name, username, hashedPassword });
+	await newUser.save();
+	req.session.user_id = newUser._id;
+	res.redirect('/');
+};
+
+module.exports.login = async (req, res) => {
+	console.log(req.body);
+	const { username, password } = req.body;
+
+	// Checking for existing user
+	const user = await User.findOne({ username });
+	if (!user) {
+		console.log('Invalid username or password.');
+		throw new AppError('Invalid username or password.', 401);
+	}
+
+	// If user exists, check their password.
+	const validPassword = await bcrypt.compare(password, user.hashedPassword);
+	if (!validPassword) {
+		console.log('Invalid username or password.');
+		throw new AppError('Invalid username or password.', 401);
+	}
+
+	// If the password is correct, a token is created and digitally signed with SECRET
+	// Only parties that know SECRET can generate a valid token; this prevents third parties from generating tokens)
+	const userForToken = {
+		username: user.username,
+		id: user._id
+	};
+
+	const token = jwt.sign(userForToken, process.env.SECRET);
+
+	res.status(200).send({ token, username: user.username, name: user.name });
+};
+
+module.exports.logout = (req, res) => {
+	req.session.destroy(() => {
+		res.json({ status: 'ok', message: 'logged out' });
+	});
+};
+
+//*************************************
+// CALL THIS ROUTE TO SEED INFO IN DB
+//*************************************
 module.exports.seedAll = async (req, res) => {
 	User.deleteMany({});
 	Stall.deleteMany({});
@@ -54,37 +104,4 @@ module.exports.seedAll = async (req, res) => {
 	}
 	console.log('SEEDED DB');
 	res.end();
-};
-
-module.exports.signup = async (req, res) => {
-	const { name, username, password } = req.body;
-	const hashedPassword = await bcrypt.hash(password, 12);
-	const newUser = new User({ name, username, hashedPassword });
-	await newUser.save();
-	req.session.user_id = newUser._id;
-	res.redirect('/');
-};
-
-module.exports.login = async (req, res) => {
-	console.log(req.body);
-	const { username, password } = req.body;
-	const user = await User.findOne({ username });
-	if (!user) {
-		console.log('Invalid username.');
-		throw new AppError('Invalid username.', 400);
-	}
-	const validPassword = await bcrypt.compare(password, user.hashedPassword);
-	if (validPassword) {
-		req.session.user_id = user._id;
-		res.json({ status: 200, message: 'ok' });
-	} else {
-		console.log('Invalid password.');
-		throw new AppError('Invalid password.', 400);
-	}
-};
-
-module.exports.logout = (req, res) => {
-	req.session.destroy(() => {
-		res.json({ status: 'ok', message: 'logged out' });
-	});
 };
