@@ -20,9 +20,25 @@ const stallSchema = new Schema(
 		author: {
 			type: Schema.Types.ObjectId,
 			ref: 'User'
+		},
+		reviews: {
+			type: [ Schema.Types.ObjectId ],
+			ref: 'Review'
 		}
 	},
 	{ timestamps: true }
 );
+
+stallSchema.methods.calcWouldQueue = function calcWouldEat() {
+	const wouldEatArr = this.reviews.map((r) => r.wouldEatAgain);
+	const wouldEat = wouldEatArr.filter((we) => we === true);
+	return wouldEat.length / wouldEatArr.length;
+};
+
+stallSchema.methods.calcWouldQueue = function calcWouldEat() {
+	const wouldQueueArr = this.reviews.map((r) => r.wouldQueueAgain);
+	const wouldQueue = wouldQueueArr.filter((wq) => wq === true);
+	return wouldQueue.length / wouldQueueArr.length;
+};
 
 module.exports = mongoose.model('Stall', stallSchema);
