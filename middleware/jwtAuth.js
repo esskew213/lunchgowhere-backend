@@ -12,6 +12,7 @@ const checkAuthorization = (req, res, next) => {
 			return next();
 		});
 	} else {
+		console.log('NOT AUTHORIZED');
 		res.status(401).json({ status: 401, message: 'Unauthorized, please log in.' });
 	}
 	return null;
