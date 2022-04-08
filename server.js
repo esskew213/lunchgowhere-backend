@@ -28,11 +28,10 @@ app.use(
 		store: store
 	})
 );
-
-const foodRoutes = require('./routes/food');
-app.use('/food', foodRoutes);
 const userRoutes = require('./routes/user');
 app.use('/', userRoutes);
+const foodRoutes = require('./routes/food');
+app.use('/food', foodRoutes);
 const reviewRoutes = require('./routes/reviews');
 const AppError = require('./AppError');
 app.use('/reviews', reviewRoutes);
