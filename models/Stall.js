@@ -29,16 +29,32 @@ const stallSchema = new Schema(
 	{ timestamps: true }
 );
 stallSchema.set('toJSON', { virtuals: true });
+
+stallSchema.virtual('calcWait').get(function calcWait() {
+	if (this.reviews.length > 0) {
+		const waitTimeArr = this.reviews.map((r) => r.waitTime);
+		const sumWaitTime = waitTimeArr.reduce((prev, curr) => prev + curr);
+		return (sumWaitTime / waitTimeArr.length).toFixed(0);
+	}
+	return null;
+});
+
 stallSchema.virtual('calcWouldEat').get(function calcWouldEat() {
-	const wouldEatArr = this.reviews.map((r) => r.wouldEatAgain);
-	const wouldEat = wouldEatArr.filter((we) => we === true);
-	return (wouldEat.length / wouldEatArr.length).toFixed(2) * 100;
+	if (this.reviews.length > 0) {
+		const wouldEatArr = this.reviews.map((r) => r.wouldEatAgain);
+		const wouldEat = wouldEatArr.filter((we) => we === true);
+		return (wouldEat.length / wouldEatArr.length).toFixed(2) * 100;
+	}
+	return null;
 });
 
 stallSchema.virtual('calcWouldQueue').get(function calcWouldEat() {
-	const wouldQueueArr = this.reviews.map((r) => r.wouldQueueAgain);
-	const wouldQueue = wouldQueueArr.filter((wq) => wq === true);
-	return (wouldQueue.length / wouldQueueArr.length).toFixed(2) * 100;
+	if (this.reviews.length > 0) {
+		const wouldQueueArr = this.reviews.map((r) => r.wouldQueueAgain);
+		const wouldQueue = wouldQueueArr.filter((wq) => wq === true);
+		return (wouldQueue.length / wouldQueueArr.length).toFixed(2) * 100;
+	}
+	return null;
 });
 
 module.exports = mongoose.model('Stall', stallSchema);

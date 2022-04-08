@@ -146,7 +146,9 @@ module.exports.seedAll = async (req, res) => {
 		});
 		await newReview.save();
 		await stall.reviews.push(newReview);
+		await user.reviews.push(newReview);
 		await stall.save();
+		await user.save();
 		console.log('seeded review');
 	}
 
