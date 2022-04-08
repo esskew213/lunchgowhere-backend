@@ -11,6 +11,6 @@ router.post('/login', catchAsync(userflow.login));
 router.get('/logout', catchAsync(userflow.logout));
 
 //// SEEDING USERS
-router.get('/seedAll', userflow.seedAll);
+router.get('/seed/seedAll', userflow.seedAll);
 
 module.exports = router;
