@@ -30,7 +30,7 @@ app.use(
 );
 
 const foodRoutes = require('./routes/food');
-app.use('/', foodRoutes);
+app.use('/food', foodRoutes);
 const userRoutes = require('./routes/user');
 app.use('/', userRoutes);
 const reviewRoutes = require('./routes/reviews');

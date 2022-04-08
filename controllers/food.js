@@ -1,7 +1,18 @@
 const Stall = require('../models/Stall');
 const AppError = require('../AppError');
 const Joi = require('joi');
-module.exports.recommended = async (req, res, next) => {
+
+module.exports.getOneStall = async (req, res) => {
+	const { id } = req.params;
+	console.log(id);
+	const stall = await Stall.findOne({ _id: id });
+	if (!stall) {
+		throw new AppError('Stall not found', 404);
+	}
+	console.log(stall.stallName);
+	res.status(200).json(stall);
+};
+module.exports.recommended = async (req, res) => {
 	const topThreeStalls = await Stall.find({}).limit(3).populate('author', { name: 1 });
 	if (!topThreeStalls) {
 		throw new AppError('Stalls not found', 404);
