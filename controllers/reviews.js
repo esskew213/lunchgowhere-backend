@@ -13,7 +13,7 @@ module.exports.new = async (req, res) => {
 	await stall.save();
 	res.status(201).json({ status: 201, message: 'New review added.' });
 };
-module.exports.checkIfReviewed = async (req, res) => {
+module.exports.checkForPrevReview = async (req, res) => {
 	const { username } = req.user;
 	const user = await User.findOne({ username });
 	const { id: stallID } = req.params;

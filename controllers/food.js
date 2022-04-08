@@ -9,8 +9,6 @@ module.exports.getOneStall = async (req, res) => {
 	const { id } = req.params;
 	console.log('LOOKING FOR STALL ID', id);
 	const stall = await Stall.findOne({ _id: id }).populate('location', { centerName: 1 }).populate('reviews');
-	const authors = stall.reviews.map((a) => a.author);
-
 	if (!stall) {
 		throw new AppError('Stall not found', 404);
 	}
