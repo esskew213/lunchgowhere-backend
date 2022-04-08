@@ -30,5 +30,12 @@ const reviewSchema = new Schema(
 	},
 	{ timestamps: true }
 );
-
+reviewSchema.statics.getReviewedStall = async function getReviewedStall(stall, author) {
+	const reviewedStall = await this.findOne({ author: author, stall: stall });
+	if (reviewedStall) {
+		return reviewedStall;
+	}
+	return null;
+};
+reviewSchema.set('toJSON', { virtuals: true });
 module.exports = mongoose.model('Review', reviewSchema);

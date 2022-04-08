@@ -6,9 +6,7 @@ module.exports.new = async (req, res) => {
 	const user = await User.findOne({ username });
 	const { stallID, price, waitTime, wouldEatAgain, wouldQueueAgain } = req.body;
 	const stall = await Stall.findOne({ _id: stallID });
-	console.log('FOUND STALL', stall);
 	const newReview = new Review({ price, waitTime, wouldEatAgain, wouldQueueAgain, stall: stall, author: user });
-	console.log(newReview);
 	await newReview.save();
 	await user.reviews.push(newReview);
 	await stall.reviews.push(newReview);
@@ -20,14 +18,9 @@ module.exports.checkIfReviewed = async (req, res) => {
 	const user = await User.findOne({ username });
 	const { id: stallID } = req.params;
 	const stall = await Stall.findOne({ _id: stallID });
-	console.log('FOUND STALL', stall);
-	const newReview = new Review({ price, waitTime, wouldEatAgain, wouldQueueAgain, stall: stall, author: user });
-	console.log(newReview);
-	await newReview.save();
-
-	await stall.reviews.push(newReview);
-	await stall.save();
-	res.status(201).json({ status: 201, message: 'New review added.' });
+	const prevReview = await Review.getReviewedStall(stall, user);
+	console.log('REVIEWED', prevReview);
+	res.status(200).json(prevReview);
 };
 module.exports.delete = async (req, res) => {
 	await Review.deleteOne({ _id: req.body.reviewID });
