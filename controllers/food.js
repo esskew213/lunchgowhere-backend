@@ -1,13 +1,24 @@
 const Stall = require('../models/Stall');
 const AppError = require('../AppError');
 const Joi = require('joi');
-module.exports.recommended = async (req, res, next) => {
-	const topThreeStalls = await Stall.find({}).limit(3).populate('author');
+
+module.exports.getOneStall = async (req, res) => {
+	const { id } = req.params;
+	console.log(id);
+	const stall = await Stall.findOne({ _id: id });
+	if (!stall) {
+		throw new AppError('Stall not found', 404);
+	}
+	console.log(stall.stallName);
+	res.status(200).json(stall);
+};
+module.exports.recommended = async (req, res) => {
+	const topThreeStalls = await Stall.find({}).limit(3).populate('author', { name: 1 });
 	if (!topThreeStalls) {
 		throw new AppError('Stalls not found', 404);
 	}
 	console.log(topThreeStalls);
-	res.json(topThreeStalls);
+	res.status(200).json(topThreeStalls);
 };
 
 module.exports.new = async (req, res) => {
@@ -24,6 +35,6 @@ module.exports.new = async (req, res) => {
 	}
 	const newStall = new Stall(req.body);
 	await newStall.save();
-	res.status(200).json({ status: 200, message: 'ok' });
+	res.status(201).json({ status: 201, message: 'ok' });
 	console.log('NEW STALL SAVED');
 };
