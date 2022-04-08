@@ -2,11 +2,13 @@ const express = require('express');
 const session = require('express-session');
 const connectDB = require('./db/db');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const app = express();
 require('dotenv').config();
 
-app.use(cors());
+app.use(cors({ origin: [ 'http://localhost:3000', 'http://localhost:5001' ], credentials: true }));
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -28,7 +30,7 @@ app.use(
 );
 
 const foodRoutes = require('./routes/food');
-app.use('/', foodRoutes);
+app.use('/food', foodRoutes);
 const userRoutes = require('./routes/user');
 app.use('/', userRoutes);
 const reviewRoutes = require('./routes/reviews');
@@ -37,7 +39,7 @@ app.use('/reviews', reviewRoutes);
 
 //// THROW ERROR IF USER TRIES TO ACCESS UNDEFINED ROUTES
 app.all('*', (req, res, next) => {
-	next(new AppError('Page not found', 404));
+	next(new AppError('Unknown endpoint', 404));
 });
 
 // ERROR HANDLING MIDDLEWARE
