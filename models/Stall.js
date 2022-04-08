@@ -29,7 +29,7 @@ const stallSchema = new Schema(
 	{ timestamps: true }
 );
 
-stallSchema.methods.calcWouldQueue = function calcWouldEat() {
+stallSchema.methods.calcWouldEat = function calcWouldEat() {
 	const wouldEatArr = this.reviews.map((r) => r.wouldEatAgain);
 	const wouldEat = wouldEatArr.filter((we) => we === true);
 	return wouldEat.length / wouldEatArr.length;

@@ -30,11 +30,11 @@ app.use(
 );
 const userRoutes = require('./routes/user');
 app.use('/', userRoutes);
+const reviewRoutes = require('./routes/reviews');
+app.use('/review', reviewRoutes);
 const foodRoutes = require('./routes/food');
 app.use('/food', foodRoutes);
-const reviewRoutes = require('./routes/reviews');
 const AppError = require('./AppError');
-app.use('/reviews', reviewRoutes);
 
 //// THROW ERROR IF USER TRIES TO ACCESS UNDEFINED ROUTES
 app.all('*', (req, res, next) => {

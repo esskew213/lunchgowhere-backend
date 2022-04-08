@@ -4,10 +4,10 @@ const Joi = require('joi');
 
 module.exports.getOneStall = async (req, res) => {
 	const { id } = req.params;
-	console.log(id);
+	console.log('LOOKING FOR STALL ID', id);
 	const stall = await Stall.findOne({ _id: id }).populate('location', { centerName: 1 }).populate('reviews');
-	console.log(stall.calcWouldEat());
 	console.log(stall);
+	console.log('CALCULATING STATS', stall.calcWouldEat(), stall.calcWouldQueue());
 	if (!stall) {
 		throw new AppError('Stall not found', 404);
 	}

@@ -1,13 +1,18 @@
 const Review = require('../models/Review');
-const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Stall = require('../models/Stall');
 module.exports.new = async (req, res) => {
 	const { username } = req.user;
 	const user = await User.findOne({ username });
-	console.log('FOUND', user);
-	const { price, waitTime, wouldEatAgain, wouldQueueAgain } = req.body;
-	const newReview = new Review({ price, waitTime, wouldEatAgain, wouldQueueAgain, author: user });
+	const { stallID, price, waitTime, wouldEatAgain, wouldQueueAgain } = req.body;
+	const stall = await Stall.findOne({ _id: stallID });
+	console.log('FOUND STALL', stall);
+	const newReview = new Review({ price, waitTime, wouldEatAgain, wouldQueueAgain, stall: stall, author: user });
+	console.log(newReview);
 	await newReview.save();
+
+	await stall.reviews.push(newReview);
+	await stall.save();
 	res.status(201).json({ status: 201, message: 'New review added.' });
 };
 
