@@ -21,17 +21,22 @@ module.exports.signup = async (req, res) => {
 	const { name, username, password } = req.body;
 	const hashedPassword = await bcrypt.hash(password, 12);
 	const newUser = new User({ name, username, hashedPassword });
+	console.log(newUser);
 	await newUser.save();
 
+	const currentUser = await User.findOne({ username: newUser.username });
 	const userForToken = {
-		username: newUser.username,
-		id: newUser._id
+		username: currentUser.username,
+		id: currentUser._id
 	};
-
 	const token = jwt.sign(userForToken, process.env.SECRET, { expiresIn: 60 * 60 });
-
-	res.status(200).send({ token, username: user.username, name: user.name });
-	res.redirect('/');
+	res.cookie('token', token, {
+		httpOnly: true,
+		maxAge: 60 * 60 * 1000
+	});
+	res.header('Access-Control-Allow-Credentials', true);
+	console.log('CREATED NEW USER');
+	res.status(200).json({ token, username: currentUser.username, name: currentUser.name });
 };
 
 module.exports.login = async (req, res) => {
@@ -58,7 +63,7 @@ module.exports.login = async (req, res) => {
 		username: user.username,
 		id: user._id
 	};
-	const token = jwt.sign(userForToken, process.env.SECRET, { expiresIn: 60 * 60 });
+	const token = await jwt.sign(userForToken, process.env.SECRET, { expiresIn: 60 * 60 });
 
 	// set cookie with the token. httpOnly: true means cookie can't be read with JS but can be sent back to the server in HTTP requests
 	// this prevents XSS attacks from using document.cookie ot get a list of stored cookies
