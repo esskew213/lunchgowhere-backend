@@ -1,9 +1,10 @@
 const User = require('../models/User');
 const Stall = require('../models/Stall');
 const Review = require('../models/Review');
+const HawkerCenter = require('../models/HawkerCenter')
 const jwt = require('jsonwebtoken');
-
 const bcrypt = require('bcrypt');
+const seedHawkerCenters = require('../seeds/seedHawkerCenters')
 const seedUsers = require('../seeds/seedUsers');
 const seedStalls = require('../seeds/seedStalls');
 const seedReviews = require('../seeds/seedReviews');
@@ -83,6 +84,18 @@ module.exports.seedAll = async (req, res) => {
   User.deleteMany({});
   Stall.deleteMany({});
   Review.deleteMany({});
+  HawkerCenter.deleteMany({});
+
+  for (let hc of seedHawkerCenters) {
+    const newHC = new HawkerCenter({
+      centerName: hc.name_of_centre,
+      x: hc.X,
+      y: hc.Y,
+    });
+    await newHC.save();
+    console.log("seeded HC");
+  }
+
   for (let user of seedUsers) {
     user.hashedPassword = await bcrypt.hash(user.password, 12);
     const newUser = new User({
@@ -98,11 +111,12 @@ module.exports.seedAll = async (req, res) => {
   for (let i = 0; i < 3; i++) {
     const user = users[i];
     const stall = seedStalls[i];
+    const location = await HawkerCenter.findOne({});
 
     const newStall = new Stall({
       stallName: stall.stallName,
       cuisine: stall.cuisine,
-      location: stall.location,
+      location: location,
       author: user,
     });
     await newStall.save();
@@ -125,6 +139,7 @@ module.exports.seedAll = async (req, res) => {
     await newReview.save();
     console.log("seeded review");
   }
+
   console.log("SEEDED DB");
   res.end();
 };
