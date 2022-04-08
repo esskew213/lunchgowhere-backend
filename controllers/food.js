@@ -6,12 +6,11 @@ module.exports.getOneStall = async (req, res) => {
 	const { id } = req.params;
 	console.log('LOOKING FOR STALL ID', id);
 	const stall = await Stall.findOne({ _id: id }).populate('location', { centerName: 1 }).populate('reviews');
-	console.log(stall);
-	console.log('CALCULATING STATS', stall.calcWouldEat(), stall.calcWouldQueue());
+	// console.log(stall);
+	// console.log('CALCULATING STATS', stall.calcWouldEat, stall.calcWouldQueue);
 	if (!stall) {
 		throw new AppError('Stall not found', 404);
 	}
-
 	res.status(200).json(stall);
 };
 module.exports.recommended = async (req, res) => {

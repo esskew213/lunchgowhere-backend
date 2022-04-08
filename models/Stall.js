@@ -28,17 +28,17 @@ const stallSchema = new Schema(
 	},
 	{ timestamps: true }
 );
-
-stallSchema.methods.calcWouldEat = function calcWouldEat() {
+stallSchema.set('toJSON', { virtuals: true });
+stallSchema.virtual('calcWouldEat').get(function calcWouldEat() {
 	const wouldEatArr = this.reviews.map((r) => r.wouldEatAgain);
 	const wouldEat = wouldEatArr.filter((we) => we === true);
-	return wouldEat.length / wouldEatArr.length;
-};
+	return (wouldEat.length / wouldEatArr.length).toFixed(2) * 100;
+});
 
-stallSchema.methods.calcWouldQueue = function calcWouldEat() {
+stallSchema.virtual('calcWouldQueue').get(function calcWouldEat() {
 	const wouldQueueArr = this.reviews.map((r) => r.wouldQueueAgain);
 	const wouldQueue = wouldQueueArr.filter((wq) => wq === true);
-	return wouldQueue.length / wouldQueueArr.length;
-};
+	return (wouldQueue.length / wouldQueueArr.length).toFixed(2) * 100;
+});
 
 module.exports = mongoose.model('Stall', stallSchema);
