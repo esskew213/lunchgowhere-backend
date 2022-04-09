@@ -59,3 +59,5 @@ const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`LISTENING ON PORT ${PORT}`);
 });
+
+app.use("/cloudinary", require("./routes/cloudinary"));
