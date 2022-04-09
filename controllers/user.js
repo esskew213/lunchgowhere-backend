@@ -1,14 +1,15 @@
-const User = require('../models/User');
-const Stall = require('../models/Stall');
-const Review = require('../models/Review');
-const HawkerCenter = require('../models/HawkerCenter');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const seedHawkerCenters = require('../seeds/seedHawkerCenters');
-const seedUsers = require('../seeds/seedUsers');
-const seedStalls = require('../seeds/seedStalls');
-const seedReviews = require('../seeds/seedReviews');
-const AppError = require('../AppError');
+const User = require("../models/User");
+const Stall = require("../models/Stall");
+const Review = require("../models/Review");
+const HawkerCenter = require("../models/HawkerCenter");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const seedHawkerCenters = require("../seeds/seedHawkerCenters");
+const seedUsers = require("../seeds/seedUsers");
+const seedStalls = require("../seeds/seedStalls");
+const seedReviews = require("../seeds/seedReviews");
+const Joi = require("joi");
+const AppError = require("../AppError");
 
 module.exports.getuser = async (req, res) => {
 	console.log('GETTING USER...');
@@ -18,26 +19,42 @@ module.exports.getuser = async (req, res) => {
 };
 
 module.exports.signup = async (req, res) => {
-	const { name, username, password } = req.body;
-	const hashedPassword = await bcrypt.hash(password, 12);
-	const newUser = new User({ name, username, hashedPassword });
-	await newUser.save();
+	    const { name, username, password } = req.body;
+  const passwordJoiSchema = Joi.object({
+    password: Joi.string()
+      .required()
+      .regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/),
+  });
 
-	const currentUser = await User.findOne({ username: newUser.username });
-	const userForToken = {
-		username: currentUser.username,
-		id: currentUser._id
-	};
-	const token = jwt.sign(userForToken, process.env.SECRET, {
-		expiresIn: 60 * 60
-	});
-	res.cookie('token', token, {
-		httpOnly: true,
-		maxAge: 60 * 60 * 1000
-	});
-	res.header('Access-Control-Allow-Credentials', true);
-	console.log('CREATED NEW USER');
-	res.status(200).json({ token, username: currentUser.username, name: currentUser.name });
+  const { error } = passwordJoiSchema.validate({ password: password });
+  if (error) {
+    console.log(error);
+
+    res.status(400).send(error.details[0].message);
+  } else {
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const newUser = new User({ name, username, hashedPassword });
+    await newUser.save();
+
+    const currentUser = await User.findOne({ username: newUser.username });
+    const userForToken = {
+      username: currentUser.username,
+      id: currentUser._id,
+    };
+    const token = jwt.sign(userForToken, process.env.SECRET, {
+      expiresIn: 60 * 60,
+    });
+    res.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 1000,
+    });
+    res.header("Access-Control-Allow-Credentials", true);
+    console.log("CREATED NEW USER");
+    res
+      .status(200)
+      .json({ token, username: currentUser.username, name: currentUser.name });
+  }
 };
 
 module.exports.login = async (req, res) => {
