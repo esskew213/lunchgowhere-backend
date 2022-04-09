@@ -1,3 +1,5 @@
+const multerUploads = require("./utils/multer");
+
 const express = require("express");
 const session = require("express-session");
 const connectDB = require("./db/db");
@@ -16,7 +18,7 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use("/cloudinary", require("./routes/cloudinary"));
+// app.use("/cloudinary", require("./routes/cloudinary"));
 
 ////
 const store = new MongoDBStore({
@@ -43,7 +45,7 @@ const foodRoutes = require("./routes/food");
 app.use("/food", foodRoutes);
 const AppError = require("./AppError");
 
-//// THROW ERROR IF USER TRIES TO ACCESS UNDEFINED ROUTES
+//// THROW ERROR IF USER TRIES TO ACCESS UNDEFINED ROUTES // disabled for testing
 app.all("*", (req, res, next) => {
   next(new AppError("Unknown endpoint", 404));
 });
@@ -60,4 +62,9 @@ app.listen(PORT, () => {
   console.log(`LISTENING ON PORT ${PORT}`);
 });
 
-app.use("/cloudinary", require("./routes/cloudinary"));
+// app.use("/cloudinary", require("./routes/cloudinary"));
+
+app.post("/upload", multerUploads, (req, res) => {
+  console.log("req.body :", req.body);
+  res.end();
+});
