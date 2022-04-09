@@ -1,15 +1,17 @@
 const Stall = require('../models/Stall');
+const User = require('../models/User');
 const AppError = require('../AppError');
 const Joi = require('joi');
 
 module.exports.getOneStall = async (req, res) => {
+	const { username } = req.user;
+	const user = await User.findOne({ username });
 	const { id } = req.params;
-	console.log(id);
-	const stall = await Stall.findOne({ _id: id });
+	console.log('LOOKING FOR STALL ID', id);
+	const stall = await Stall.findOne({ _id: id }).populate('location', { centerName: 1 }).populate('reviews');
 	if (!stall) {
 		throw new AppError('Stall not found', 404);
 	}
-	console.log(stall.stallName);
 	res.status(200).json(stall);
 };
 module.exports.recommended = async (req, res) => {

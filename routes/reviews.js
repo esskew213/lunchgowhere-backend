@@ -10,5 +10,5 @@ router
 	.post(jwtAuth, catchAsync(reviews.new))
 	.delete(jwtAuth, catchAsync(reviews.delete))
 	.put(jwtAuth, catchAsync(reviews.edit));
-
+router.get('/:id', jwtAuth, catchAsync(reviews.checkForPrevReview));
 module.exports = router;
