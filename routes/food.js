@@ -6,5 +6,5 @@ const jwtAuth = require('../middleware/jwtAuth');
 const catchAsync = require('../middleware/errorHandler');
 router.get('/home', catchAsync(food.recommended));
 router.post('/new', catchAsync(food.new));
-router.get('/:id', catchAsync(food.getOneStall));
+router.get('/:id', jwtAuth, catchAsync(food.getOneStall));
 module.exports = router;

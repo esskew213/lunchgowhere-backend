@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
@@ -14,10 +14,15 @@ const userSchema = new Schema(
 		},
 		hashedPassword: {
 			type: String,
-			required: true
+      required: [true, "Password is required."],
+		},
+		reviews: {
+			type: [ Schema.Types.ObjectId ],
+			ref: 'Review'
 		}
 	},
 	{ timestamps: true }
 );
 
 module.exports = mongoose.model('User', userSchema);
+userSchema.set('toJSON', { virtuals: true });
