@@ -21,6 +21,7 @@
   "homepage": "https://github.com/esskew213/lunchgowhere-backend#readme",
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "body-parser": "^1.20.0",
     "connect-mongodb-session": "^3.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
