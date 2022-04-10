@@ -18,9 +18,9 @@ module.exports.checkForPrevReview = async (req, res) => {
 	const user = await User.findOne({ username });
 	const { id: stallID } = req.params;
 	const stall = await Stall.findOne({ _id: stallID });
-	const prevReview = await Review.getReviewedStall(stall, user);
+	const prevReview = await Review.getReviewOfStall(stall, user);
 	console.log('REVIEWED', prevReview);
-	res.status(200).json(prevReview);
+	res.status(200).json({ review: prevReview });
 };
 module.exports.delete = async (req, res) => {
 	await Review.deleteOne({ _id: req.body.reviewID });
