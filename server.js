@@ -34,17 +34,21 @@ const reviewRoutes = require('./routes/reviews');
 app.use('/review', reviewRoutes);
 const foodRoutes = require('./routes/food');
 app.use('/food', foodRoutes);
-const AppError = require('./AppError');
+const UserError = require('./UserError');
 
 //// THROW ERROR IF USER TRIES TO ACCESS UNDEFINED ROUTES
 app.all('*', (req, res, next) => {
-	next(new AppError('Unknown endpoint', 404));
+	next(new UserError('Unknown endpoint', 404));
 });
 
 // ERROR HANDLING MIDDLEWARE
 app.use((err, req, res, next) => {
-	const { status = 500, message = 'Something went wrong' } = err;
-	res.status(status).send(message);
+	if (err instanceof UserError) {
+		console.log(err);
+		res.status(err.status).send(err.message);
+	} else {
+		next(err);
+	}
 });
 
 connectDB(process.env.MONGODB_URI);
