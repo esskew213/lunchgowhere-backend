@@ -3,7 +3,7 @@ const User = require('../models/User');
 const Image = require('../models/Image');
 const HawkerCenter = require('../models/HawkerCenter');
 const seedHawkerCenters = require('../seeds/seedHawkerCenters');
-const AppError = require('../AppError');
+const UserError = require('../UserError');
 const Joi = require('joi');
 module.exports.getOneStall = async (req, res) => {
 	const { username } = req.user;
@@ -12,14 +12,14 @@ module.exports.getOneStall = async (req, res) => {
 	console.log('LOOKING FOR STALL ID', id);
 	const stall = await Stall.findOne({ _id: id }).populate('location', { centerName: 1 }).populate('reviews');
 	if (!stall) {
-		throw new AppError('Stall not found', 404);
+		throw new UserError('Stall not found', 404);
 	}
 	res.status(200).json(stall);
 };
 module.exports.recommended = async (req, res) => {
 	const topThreeStalls = await Stall.find({}).limit(3).populate('author', { name: 1 });
 	if (!topThreeStalls) {
-		throw new AppError('Stalls not found', 404);
+		throw new UserError('Stalls not found', 404);
 	}
 	console.log(topThreeStalls);
 	res.status(200).json(topThreeStalls);
@@ -34,10 +34,10 @@ module.exports.new = async (req, res) => {
 	// const { error } = stallJoiSchema.validate(req.body);
 	// if (error) {
 	// 	const errorMsg = error.details.map((msg) => msg.message).join(', ');
-	// 	throw new AppError(errorMsg, 400);
+	// 	throw new UserError(errorMsg, 400);
 	// }
-	// const { username } = req.user;
-	// const user = await User.findOne({ username });
+	const { username } = req.user;
+	const user = await User.findOne({ username });
 	const resFromCloudinary = req.file;
 	const { location, stallName, cuisine } = req.body;
 	console.log(location, stallName, cuisine);
@@ -45,7 +45,13 @@ module.exports.new = async (req, res) => {
 	console.log(hawkerCenter);
 	const newImage = new Image({ url: resFromCloudinary.path, filename: resFromCloudinary.filename });
 	await newImage.save();
-	const newStall = new Stall({ stallName: stallName, cuisine: cuisine, location: hawkerCenter, img: newImage });
+	const newStall = new Stall({
+		stallName: stallName,
+		cuisine: cuisine,
+		location: hawkerCenter,
+		author: user,
+		img: newImage
+	});
 	console.log(newStall);
 	await newStall.save();
 	res.status(201).json({ status: 201, message: 'ok' });

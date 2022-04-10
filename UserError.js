@@ -1,4 +1,4 @@
-class AppError extends Error {
+class UserError extends Error {
 	constructor(message, status) {
 		super();
 		this.message = message;
@@ -6,4 +6,4 @@ class AppError extends Error {
 	}
 }
 
-module.exports = AppError;
+module.exports = UserError;
