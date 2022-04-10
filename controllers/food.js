@@ -61,7 +61,7 @@ module.exports.new = async (req, res) => {
 	});
 	console.log(newStall);
 	await newStall.save();
-	res.status(201).json({ status: 201, message: 'ok' });
+	res.status(201).json({ stallID: newStall._id });
 	console.log('NEW STALL SAVED');
 };
 
