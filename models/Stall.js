@@ -21,6 +21,10 @@ const stallSchema = new Schema(
 			type: Schema.Types.ObjectId,
 			ref: 'User'
 		},
+		img: {
+			type: Schema.Types.ObjectId,
+			ref: 'Image'
+		},
 		reviews: {
 			type: [ Schema.Types.ObjectId ],
 			ref: 'Review'
