@@ -8,6 +8,7 @@ const catchAsync = require('../middleware/errorHandler');
 router
 	.route('/')
 	.post(jwtAuth, catchAsync(reviews.new))
+	.patch(jwtAuth, catchAsync(reviews.update))
 	.delete(jwtAuth, catchAsync(reviews.delete))
 	.put(jwtAuth, catchAsync(reviews.edit));
 router.get('/:id', jwtAuth, catchAsync(reviews.checkForPrevReview));

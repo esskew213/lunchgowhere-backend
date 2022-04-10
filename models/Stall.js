@@ -46,7 +46,7 @@ stallSchema.virtual('calcPrice').get(function calcPrice() {
 	if (this.reviews.length > 0) {
 		const priceArr = this.reviews.map((r) => r.price);
 		const sumPrice = priceArr.reduce((prev, curr) => prev + curr);
-		return (sumPrice / priceArr.length).toFixed(2);
+		return Math.round(sumPrice / priceArr.length);
 	}
 	return null;
 });
@@ -59,11 +59,11 @@ stallSchema.virtual('calcWouldEat').get(function calcWouldEat() {
 	return null;
 });
 
-stallSchema.virtual('calcWouldQueue').get(function calcWouldEat() {
+stallSchema.virtual('calcWouldQueue').get(function calcWouldQueue() {
 	if (this.reviews.length > 0) {
 		const wouldQueueArr = this.reviews.map((r) => r.wouldQueueAgain);
 		const wouldQueue = wouldQueueArr.filter((wq) => wq === true);
-		return (wouldQueue.length / wouldQueueArr.length).toFixed(0) * 100;
+		return (wouldQueue.length / wouldQueueArr.length).toFixed(2) * 100;
 	}
 	return null;
 });

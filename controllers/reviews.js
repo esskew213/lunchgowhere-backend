@@ -6,12 +6,36 @@ module.exports.new = async (req, res) => {
 	const user = await User.findOne({ username });
 	const { stallID, price, waitTime, wouldEatAgain, wouldQueueAgain } = req.body;
 	const stall = await Stall.findOne({ _id: stallID });
-	const newReview = new Review({ price, waitTime, wouldEatAgain, wouldQueueAgain, stall: stall, author: user });
+	const newReview = new Review({
+		price,
+		waitTime,
+		wouldEatAgain: wouldEatAgain,
+		wouldQueueAgain: wouldQueueAgain,
+		stall: stall,
+		author: user
+	});
 	await newReview.save();
 	await user.reviews.push(newReview);
 	await stall.reviews.push(newReview);
 	await stall.save();
-	res.status(201).json({ status: 201, message: 'New review added.' });
+	res.status(201).json({ message: 'New review added.' });
+};
+module.exports.update = async (req, res) => {
+	const { username } = req.user;
+	const user = await User.findOne({ username });
+	const { stallID, price, waitTime, wouldEatAgain, wouldQueueAgain } = req.body;
+	const stall = await Stall.findOne({ _id: stallID });
+	const prevReview = await Review.getReviewOfStall(stall, user);
+	await prevReview.overwrite({
+		price: price,
+		waitTime: waitTime,
+		wouldEatAgain: wouldEatAgain,
+		wouldQueueAgain: wouldQueueAgain,
+		stall: stall,
+		author: user
+	});
+	await prevReview.save();
+	res.status(200).json({ message: 'Review updated.' });
 };
 module.exports.checkForPrevReview = async (req, res) => {
 	const { username } = req.user;
