@@ -1,40 +1,40 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const stallSchema = new Schema(
 	{
 		stallName: {
 			type: String,
-			required: [ true, 'Stall name is required.' ]
+			required: [ true, "Stall name is required." ]
 		},
 		cuisine: {
 			type: String,
-			enum: [ 'Chinese', 'Western', 'Korean', 'Japanese', 'Malay', 'Indian', 'Others' ],
-			required: [ true, 'Cuisine is required.' ]
+			enum: [ "Chinese", "Western", "Korean", "Japanese", "Malay", "Indian", "Others" ],
+			required: [ true, "Cuisine is required." ]
 		},
 		location: {
 			type: Schema.Types.ObjectId,
-			ref: 'HawkerCenter',
-			required: [ true, 'Valid location is required.' ]
+			ref: "HawkerCenter",
+			required: [ true, "Valid location is required." ]
 		},
 		author: {
 			type: Schema.Types.ObjectId,
-			ref: 'User'
+			ref: "User"
 		},
 		img: {
 			type: Schema.Types.ObjectId,
-			ref: 'Image'
+			ref: "Image"
 		},
 		reviews: {
 			type: [ Schema.Types.ObjectId ],
-			ref: 'Review'
+			ref: "Review"
 		}
 	},
 	{ timestamps: true }
 );
-stallSchema.set('toJSON', { virtuals: true });
+stallSchema.set("toJSON", { virtuals: true });
 
-stallSchema.virtual('calcWait').get(function calcWait() {
+stallSchema.virtual("calcWait").get(function calcWait() {
 	if (this.reviews.length > 0) {
 		const waitTimeArr = this.reviews.map((r) => r.waitTime);
 		const sumWaitTime = waitTimeArr.reduce((prev, curr) => prev + curr);
@@ -42,7 +42,7 @@ stallSchema.virtual('calcWait').get(function calcWait() {
 	}
 	return null;
 });
-stallSchema.virtual('calcPrice').get(function calcPrice() {
+stallSchema.virtual("calcPrice").get(function calcPrice() {
 	if (this.reviews.length > 0) {
 		const priceArr = this.reviews.map((r) => r.price);
 		const sumPrice = priceArr.reduce((prev, curr) => prev + curr);
@@ -50,7 +50,7 @@ stallSchema.virtual('calcPrice').get(function calcPrice() {
 	}
 	return null;
 });
-stallSchema.virtual('calcWouldEat').get(function calcWouldEat() {
+stallSchema.virtual("calcWouldEat").get(function calcWouldEat() {
 	if (this.reviews.length > 0) {
 		const wouldEatArr = this.reviews.map((r) => r.wouldEatAgain);
 		const wouldEat = wouldEatArr.filter((we) => we === true);
@@ -59,7 +59,7 @@ stallSchema.virtual('calcWouldEat').get(function calcWouldEat() {
 	return null;
 });
 
-stallSchema.virtual('calcWouldQueue').get(function calcWouldQueue() {
+stallSchema.virtual("calcWouldQueue").get(function calcWouldQueue() {
 	if (this.reviews.length > 0) {
 		const wouldQueueArr = this.reviews.map((r) => r.wouldQueueAgain);
 		const wouldQueue = wouldQueueArr.filter((wq) => wq === true);
@@ -67,7 +67,7 @@ stallSchema.virtual('calcWouldQueue').get(function calcWouldQueue() {
 	}
 	return null;
 });
-stallSchema.virtual('numReviews').get(function numReviews() {
+stallSchema.virtual("numReviews").get(function numReviews() {
 	return this.reviews.length;
 });
-module.exports = mongoose.model('Stall', stallSchema);
+module.exports = mongoose.model("Stall", stallSchema);

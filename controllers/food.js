@@ -8,18 +8,17 @@ const UserError = require("../UserError");
 const Joi = require("joi");
 
 module.exports.getOneStall = async (req, res) => {
-    const { username } = req.user;
-    const user = await User.findOne({ username });
     const { id } = req.params;
     if (ObjectID.isValid(id)) {
         console.log("LOOKING FOR STALL ID", id);
         const stall = await Stall.findOne({ _id: id })
             .populate("location", { centerName: 1 })
-            .populate("reviews");
+            .populate("reviews")
+            .populate("img", { url: 1 });
         if (!stall) {
             throw new UserError("Stall not found", 404);
         } else {
-            res.status(200).json(stall);
+            res.status(200).json({ stall: stall });
         }
     } else {
         console.log("INVALID STALL ID", id);
@@ -112,4 +111,14 @@ module.exports.search = async (req, res) => {
     );
     res.json(validStalls);
     console.log(`valid: ${validStalls}`);
+
+    for (let hc of seedHawkerCenters) {
+        const newHC = new HawkerCenter({
+            centerName: hc.name_of_centre,
+            x: hc.X,
+            y: hc.Y,
+        });
+        await newHC.save();
+        console.log("seeded HC");
+    }
 };
