@@ -20,8 +20,9 @@ module.exports.getNearestStalls = async (req, res) => {
 	hawkerCenters.sort(function(hc1, hc2) {
 		return calcDist(hc1.x, x, hc1.y, y) - calcDist(hc2.x, x, hc2.y, y);
 	});
+	const hawkerCenterNames = hawkerCenters.map((hc) => hc.centerName);
 	console.log("NEAREST TO YOU", hawkerCenters.slice(0, 10));
-	res.json({ sortedHawkers: hawkerCenters.map((hc) => hc.centerName) });
+	res.json({ sortedHawkers: hawkerCenterNames });
 };
 module.exports.getOneStall = async (req, res) => {
 	const { id } = req.params;
