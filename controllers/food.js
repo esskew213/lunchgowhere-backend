@@ -98,7 +98,11 @@ module.exports.search = async (req, res) => {
 
     const showStalls = await Stall.find({
         location: hawkerCenter,
-    }).populate("reviews");
+    })
+        .populate("reviews")
+        .populate("location", { centerName: 1 })
+        .populate("img", { url: 1 });
+    console.log(showStalls);
 
     const validStalls = showStalls.filter(
         (stall) =>
@@ -106,6 +110,6 @@ module.exports.search = async (req, res) => {
             stall.numReviews > 0 &&
             stall.calcWait <= waitTime
     );
-
+    res.json(validStalls);
     console.log(`valid: ${validStalls}`);
 };
