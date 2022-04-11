@@ -1,15 +1,14 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const reviews = require('../controllers/reviews');
-const jwtAuth = require('../middleware/jwtAuth');
+const reviews = require("../controllers/reviews");
+const jwtAuth = require("../middleware/jwtAuth");
 // use this middleware to catch async errors
-const catchAsync = require('../middleware/errorHandler');
+const catchAsync = require("../middleware/errorHandler");
 
 router
-	.route('/')
+	.route("/")
 	.post(jwtAuth, catchAsync(reviews.new))
 	.patch(jwtAuth, catchAsync(reviews.update))
-	.delete(jwtAuth, catchAsync(reviews.delete))
 	.put(jwtAuth, catchAsync(reviews.edit));
-router.get('/:id', jwtAuth, catchAsync(reviews.checkForPrevReview));
+router.route("/:id").get(jwtAuth, catchAsync(reviews.checkForPrevReview)).delete(jwtAuth, catchAsync(reviews.delete));
 module.exports = router;
