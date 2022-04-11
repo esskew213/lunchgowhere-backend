@@ -7,6 +7,10 @@ const ObjectID = require("mongoose").Types.ObjectId;
 const UserError = require("../UserError");
 const Joi = require("joi");
 
+module.exports.getNearestStalls = async (req, res) => {
+	const { x, y } = req.body;
+	console.log("FOUND COORDS", x, y);
+};
 module.exports.getOneStall = async (req, res) => {
 	const { id } = req.params;
 	if (ObjectID.isValid(id)) {
