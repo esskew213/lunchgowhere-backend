@@ -6,17 +6,18 @@ const seedHawkerCenters = require('../seeds/seedHawkerCenters');
 const ObjectID = require('mongoose').Types.ObjectId;
 const UserError = require('../UserError');
 const Joi = require('joi');
+
 module.exports.getOneStall = async (req, res) => {
-	const { username } = req.user;
-	const user = await User.findOne({ username });
 	const { id } = req.params;
 	if (ObjectID.isValid(id)) {
 		console.log('LOOKING FOR STALL ID', id);
-		const stall = await Stall.findOne({ _id: id }).populate('location', { centerName: 1 }).populate('reviews');
+		const stall = await (await Stall.findOne({ _id: id })
+			.populate('location', { centerName: 1 })
+			.populate('reviews')).populate('img', { url: 1 });
 		if (!stall) {
 			throw new UserError('Stall not found', 404);
 		} else {
-			res.status(200).json(stall);
+			res.status(200).json({ stall: stall });
 		}
 	} else {
 		console.log('INVALID STALL ID', id);
