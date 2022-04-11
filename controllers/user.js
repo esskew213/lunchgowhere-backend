@@ -95,7 +95,6 @@ module.exports.login = async (req, res) => {
 };
 
 module.exports.logout = async (req, res) => {
-    console.log("no more cookie");
     res.clearCookie("token");
     await res.json({ message: "logout" });
     // req.session.destroy(() => {
