@@ -111,14 +111,4 @@ module.exports.search = async (req, res) => {
     );
     res.json(validStalls);
     console.log(`valid: ${validStalls}`);
-
-    for (let hc of seedHawkerCenters) {
-        const newHC = new HawkerCenter({
-            centerName: hc.name_of_centre,
-            x: hc.X,
-            y: hc.Y,
-        });
-        await newHC.save();
-        console.log("seeded HC");
-    }
 };
