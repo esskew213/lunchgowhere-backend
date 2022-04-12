@@ -26,12 +26,17 @@ module.exports.getOneStall = async (req, res) => {
 	}
 };
 module.exports.recommended = async (req, res) => {
-	const topThreeStalls = await Stall.find({}).limit(3).populate("author", { name: 1 });
-	if (!topThreeStalls) {
-		throw new UserError("Stalls not found", 404);
-	}
-	console.log(topThreeStalls);
-	res.status(200).json(topThreeStalls);
+    const topThreeStalls = await Stall.find({})
+        .limit(3)
+        .populate("author", { name: 1 })
+        .populate("img", { url: 1 })
+        .populate("location", { centerName: 1 });
+    console.log(topThreeStalls);
+    if (!topThreeStalls) {
+        throw new UserError("Stalls not found", 404);
+    }
+    console.log(topThreeStalls);
+    res.status(200).json(topThreeStalls);
 };
 
 module.exports.new = async (req, res) => {
@@ -68,8 +73,8 @@ module.exports.new = async (req, res) => {
 };
 
 module.exports.seedHawkers = async (req, res) => {
-	await HawkerCenter.deleteMany({});
-
+    await HawkerCenter.deleteMany({});
+  
 	for (let hc of seedHawkerCenters) {
 		const newHC = new HawkerCenter({
 			centerName: hc.name_of_centre,
