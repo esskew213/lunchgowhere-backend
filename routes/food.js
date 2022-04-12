@@ -11,4 +11,5 @@ router.get("/home", catchAsync(food.recommended));
 router.post("/new", [jwtAuth, upload.single("file")], catchAsync(food.new));
 router.get("/seed/seedHawkers", catchAsync(food.seedHawkers));
 router.get("/stall/:id", jwtAuth, catchAsync(food.getOneStall));
+router.post("/search", jwtAuth, catchAsync(food.search));
 module.exports = router;
