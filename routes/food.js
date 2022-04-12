@@ -13,4 +13,5 @@ router.post("/nearestStalls", jwtAuth, catchAsync(food.getNearestStalls));
 router.get("/seed/seedHawkers", catchAsync(food.seedHawkers));
 
 router.get("/stall/:id", jwtAuth, catchAsync(food.getOneStall));
+router.post("/search", jwtAuth, catchAsync(food.search));
 module.exports = router;
