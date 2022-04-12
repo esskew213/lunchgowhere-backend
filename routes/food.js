@@ -8,7 +8,7 @@ const upload = multer({ storage });
 
 const catchAsync = require("../middleware/errorHandler");
 router.get("/home", catchAsync(food.recommended));
-router.post("/new", [ jwtAuth, upload.single("file") ], catchAsync(food.new));
+router.post("/new", [jwtAuth, upload.single("file")], catchAsync(food.new));
 router.get("/seed/seedHawkers", catchAsync(food.seedHawkers));
 router.get("/stall/:id", jwtAuth, catchAsync(food.getOneStall));
 module.exports = router;
