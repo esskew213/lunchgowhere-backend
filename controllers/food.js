@@ -7,6 +7,23 @@ const ObjectID = require("mongoose").Types.ObjectId;
 const UserError = require("../UserError");
 const Joi = require("joi");
 
+module.exports.getNearestStalls = async (req, res) => {
+	const hawkerCenters = await HawkerCenter.find({});
+	const { x, y } = req.body;
+	console.log("FOUND COORDS", x, y);
+	const calcDist = (x1, x2, y1, y2) => {
+		const distance = Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
+		console.log(distance);
+		return distance;
+	};
+
+	hawkerCenters.sort(function(hc1, hc2) {
+		return calcDist(hc1.x, x, hc1.y, y) - calcDist(hc2.x, x, hc2.y, y);
+	});
+	const hawkerCenterNames = hawkerCenters.map((hc) => hc.centerName);
+	console.log("NEAREST TO YOU", hawkerCenters.slice(0, 10));
+	res.json({ sortedHawkers: hawkerCenterNames });
+};
 module.exports.getOneStall = async (req, res) => {
     const { id } = req.params;
     if (ObjectID.isValid(id)) {
