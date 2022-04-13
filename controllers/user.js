@@ -42,8 +42,7 @@ module.exports.signup = async (req, res) => {
 		});
 		res.cookie("token", token, {
 			httpOnly: true,
-			maxAge: 60 * 60 * 1000,
-			path: "/"
+			maxAge: 60 * 60 * 1000
 		});
 		res.header("Access-Control-Allow-Credentials", true);
 		console.log("CREATED NEW USER");
@@ -95,7 +94,7 @@ module.exports.login = async (req, res) => {
 
 module.exports.logout = async (req, res) => {
 	res.header("Access-Control-Allow-Credentials", true);
-	res.clearCookie("token", { domain: "lunchgowhere.netlify.app", path: "/" }).send();
+	res.clearCookie("token", { httpOnly: true }).send();
 	// req.session.destroy(() => {
 	//     res.json({ status: "ok", message: "logged out" });
 	// });
