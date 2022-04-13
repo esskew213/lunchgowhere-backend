@@ -52,7 +52,7 @@ module.exports.delete = async (req, res) => {
 	const { id: stallID } = req.params;
 	const stall = await Stall.findOne({ _id: stallID });
 	const prevReview = await Review.getReviewOfStall(stall, user);
-	await Review.deleteOne({ stall: stall, user: user });
+	await Review.deleteOne({ stall: stall, author: user });
 	await user.reviews.pull(prevReview);
 	await stall.reviews.pull(prevReview);
 	await user.save();
