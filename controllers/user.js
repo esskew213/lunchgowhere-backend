@@ -95,7 +95,8 @@ module.exports.login = async (req, res) => {
 
 module.exports.logout = async (req, res) => {
 	res.clearCookie("token");
-	await res.json({ message: "logout" });
+	res.header("Access-Control-Allow-Credentials", true);
+	await res.status(200).json({ message: "logout" });
 	// req.session.destroy(() => {
 	//     res.json({ status: "ok", message: "logged out" });
 	// });
