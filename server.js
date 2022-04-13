@@ -13,7 +13,7 @@ app.use(
 			"http://localhost:3000",
 			"http://localhost:5001",
 			"https://sei-35-lunchgowhere.herokuapp.com/",
-			"https://lunchgowhere.netlify.app/"
+			"lunchgowhere.netlify.app/"
 		],
 		credentials: true
 	})
