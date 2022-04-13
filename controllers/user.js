@@ -94,8 +94,8 @@ module.exports.login = async (req, res) => {
 };
 
 module.exports.logout = async (req, res) => {
-	res.clearCookie("token", { domain: "lunchgowhere.netlify.app", path: "/" });
-	await res.json({ message: "logout" });
+	res.header("Access-Control-Allow-Credentials", true);
+	res.clearCookie("token", { domain: "lunchgowhere.netlify.app", path: "/" }).send();
 	// req.session.destroy(() => {
 	//     res.json({ status: "ok", message: "logged out" });
 	// });
